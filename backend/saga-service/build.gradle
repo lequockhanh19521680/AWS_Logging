@@ -1,0 +1,12 @@
+plugins {
+  id 'org.springframework.boot' version '3.3.4'
+  id 'io.spring.dependency-management'
+  id 'java'
+}
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+}
+
+tasks.named('test') { useJUnitPlatform() }
+

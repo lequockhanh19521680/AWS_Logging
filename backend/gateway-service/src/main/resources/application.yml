@@ -1,0 +1,24 @@
+server:
+  port: 8081
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      routes:
+        - id: auth
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/auth/**, /oauth2/**
+        - id: content
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/questions/**, /api/steps/**
+        - id: media
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/media/**
+        - id: saga
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/saga/**
