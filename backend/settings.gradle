@@ -1,2 +1,0 @@
-rootProject.name = 'aws-learning-backend'
-include 'gateway-service', 'auth-service', 'content-service', 'media-service', 'saga-service', 'common-lib'
