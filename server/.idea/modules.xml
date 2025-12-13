@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/inventory-service/inventory-service.iml" filepath="$PROJECT_DIR$/inventory-service/inventory-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/loyalty-service/loyalty-service.iml" filepath="$PROJECT_DIR$/loyalty-service/loyalty-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/order-service/src/main/main.iml" filepath="$PROJECT_DIR$/order-service/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wallet-service/src/main/main2.iml" filepath="$PROJECT_DIR$/wallet-service/src/main/main2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/notification-service/notification-service.iml" filepath="$PROJECT_DIR$/notification-service/notification-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/omnichannel.iml" filepath="$PROJECT_DIR$/.idea/omnichannel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/payment-service/payment-service.iml" filepath="$PROJECT_DIR$/payment-service/payment-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wallet-service/src/test/test.iml" filepath="$PROJECT_DIR$/wallet-service/src/test/test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/order-service/src/test/test2.iml" filepath="$PROJECT_DIR$/order-service/src/test/test2.iml" />
+    </modules>
+  </component>
+</project>

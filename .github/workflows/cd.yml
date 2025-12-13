@@ -1,0 +1,14 @@
+name: cd
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to ECR
+        run: echo login
+      - name: Push Image
+        run: echo push
+      - name: Update ECS Task Definition
+        run: echo update

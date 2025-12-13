@@ -1,0 +1,12 @@
+topics:
+  - inventory.reserve
+  - inventory.reserved
+  - inventory.release
+  - payment.process
+  - payment.authorized
+  - payment.refunded
+  - loyalty.accrue
+  - loyalty.accrued
+  - loyalty.failed
+  - order.completed
+  - order.cancelled
