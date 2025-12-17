@@ -1,13 +1,17 @@
 package com.fintech.transaction.service;
 
+import com.fintech.common.event.TransactionCreatedEvent;
+import com.fintech.common.event.WalletProcessedEvent;
 import com.fintech.transaction.dto.TransactionRequest;
-import com.fintech.transaction.dto.WalletTransactionRequest;
 import com.fintech.transaction.model.Transaction;
 import com.fintech.transaction.model.TransactionStatus;
 import com.fintech.transaction.model.TransactionType;
 import com.fintech.transaction.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +19,11 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final WalletClient walletClient;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public List<Transaction> getHistory(Long userId) {
         return transactionRepository.findByUserId(userId);
@@ -31,62 +36,46 @@ public class TransactionService {
                 .amount(request.getAmount())
                 .currency("USD")
                 .type(request.getType())
-                .status(TransactionStatus.CREATED)
+                .status(TransactionStatus.CREATED) // Initial state
                 .referenceId(request.getReferenceId())
                 .description(request.getDescription())
                 .build();
 
         transaction = transactionRepository.save(transaction);
         
-        try {
-            processTransaction(transaction);
-            transaction.setStatus(TransactionStatus.COMPLETED);
-        } catch (Exception e) {
-            transaction.setStatus(TransactionStatus.FAILED);
-            // In a real system, we might need reversal if partial failure
-        }
+        // Publish Event
+        TransactionCreatedEvent event = TransactionCreatedEvent.builder()
+                .transactionId(transaction.getId().toString())
+                .userId(transaction.getUserId())
+                .amount(transaction.getAmount())
+                .type(transaction.getType().name())
+                .referenceId(transaction.getReferenceId())
+                .build();
+
+        kafkaTemplate.send("transaction-events", event);
+        log.info("Published transaction event: {}", event);
         
-        return transactionRepository.save(transaction);
+        return transaction;
     }
 
-    private void processTransaction(Transaction tx) {
-        String txId = tx.getId().toString() + "-" + UUID.randomUUID().toString();
-        
-        if (tx.getType() == TransactionType.TOPUP) {
-            walletClient.processWalletTransaction(WalletTransactionRequest.builder()
-                    .userId(tx.getUserId())
-                    .amount(tx.getAmount())
-                    .type("CREDIT")
-                    .transactionId(txId)
-                    .description("Topup: " + tx.getDescription())
-                    .build());
-        } else if (tx.getType() == TransactionType.WITHDRAW) {
-            walletClient.processWalletTransaction(WalletTransactionRequest.builder()
-                    .userId(tx.getUserId())
-                    .amount(tx.getAmount())
-                    .type("DEBIT")
-                    .transactionId(txId)
-                    .description("Withdraw: " + tx.getDescription())
-                    .build());
-        } else if (tx.getType() == TransactionType.TRANSFER) {
-            // Debit Sender
-            walletClient.processWalletTransaction(WalletTransactionRequest.builder()
-                    .userId(tx.getUserId())
-                    .amount(tx.getAmount())
-                    .type("DEBIT")
-                    .transactionId(txId + "-DR")
-                    .description("Transfer Out to " + tx.getReferenceId())
-                    .build());
-            
-            // Credit Receiver
-            Long receiverId = Long.parseLong(tx.getReferenceId());
-            walletClient.processWalletTransaction(WalletTransactionRequest.builder()
-                    .userId(receiverId)
-                    .amount(tx.getAmount())
-                    .type("CREDIT")
-                    .transactionId(txId + "-CR")
-                    .description("Transfer In from " + tx.getUserId())
-                    .build());
+    @KafkaListener(topics = "wallet-events", groupId = "transaction-group")
+    @Transactional
+    public void handleWalletEvent(WalletProcessedEvent event) {
+        log.info("Received wallet event: {}", event);
+        try {
+            UUID txId = UUID.fromString(event.getTransactionId());
+            Transaction transaction = transactionRepository.findById(txId)
+                    .orElseThrow(() -> new RuntimeException("Transaction not found: " + txId));
+
+            if ("SUCCESS".equals(event.getStatus())) {
+                transaction.setStatus(TransactionStatus.COMPLETED);
+            } else {
+                transaction.setStatus(TransactionStatus.FAILED);
+                // In a real SAGA, we might save the failure reason
+            }
+            transactionRepository.save(transaction);
+        } catch (Exception e) {
+            log.error("Error processing wallet event: {}", e.getMessage());
         }
     }
 }
