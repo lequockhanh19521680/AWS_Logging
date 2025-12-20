@@ -44,6 +44,14 @@ To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use th
 ng test
 ```
 
+## Internationalization (i18n)
+
+- Languages: English (default), Vietnamese.
+- Switcher: available on Login/OTP screens.
+- How to add keys: edit `src/assets/i18n/en.json` and `vi.json`.
+- Header: client sends `Accept-Language` for API responses alignment.
+- See shared guide: `../../docs/shared_list/frontend/i18n.md`
+
 ## Running end-to-end tests
 
 For end-to-end (e2e) testing, run:

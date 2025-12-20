@@ -105,6 +105,10 @@ This is the most critical feature to ensure financial safety and prevent employe
 
 To ensure maximum security for Internal Users, the Login process is split into two steps using an intermediate token.
 
+See shared references:
+- Authentication Flow: `../../docs/shared_list/auth/authentication.md`
+- JWT Claims Contract: `../../docs/shared_list/auth/jwt_claims.md`
+- Error Codes: `../../docs/shared_list/errors/error_codes.md`
 **Step 1: Primary Authentication**
 
 - **Input:** Username \+ Password.

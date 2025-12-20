@@ -1,0 +1,14 @@
+<form (ngSubmit)="submit()">
+  <app-language-switcher />
+  <h2>{{ 'login.title' | translate }}</h2>
+  <div>
+    <label>{{ 'login.username' | translate }}</label>
+    <input [(ngModel)]="username" name="username" required />
+  </div>
+  <div>
+    <label>{{ 'login.password' | translate }}</label>
+    <input [(ngModel)]="password" name="password" type="password" required />
+  </div>
+  <button type="submit">{{ 'login.submit' | translate }}</button>
+  <p>{{ message() }}</p>
+</form>

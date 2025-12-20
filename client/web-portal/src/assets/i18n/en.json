@@ -1,0 +1,17 @@
+{
+  "login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Login"
+  },
+  "otp": {
+    "title": "Enter OTP",
+    "input": "OTP",
+    "submit": "Verify"
+  },
+  "common": {
+    "error": "An error occurred",
+    "success": "Success"
+  }
+}

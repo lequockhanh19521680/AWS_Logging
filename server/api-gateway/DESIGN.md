@@ -47,6 +47,7 @@ Instead of letting Microservices validate Tokens themselves (which is redundant)
 3. **Header Sanitization:**
    - Removes sensitive headers sent by the Client (e.g., X-User-Role, X-Internal-Id) to prevent spoofing.
    - Automatically injects X-User-Id, X-Roles headers after successful validation for downstream Microservices to use.
+   - See shared JWT claims contract: `../../docs/shared_list/auth/jwt_claims.md`
 
 ### **Layer 4: Web Application Firewall (WAF) Logic (Basic)**
 
@@ -67,6 +68,11 @@ Instead of letting Microservices validate Tokens themselves (which is redundant)
 | /notifications/\*\* | notification-service | ✅ Secured         | Get noti history, Register device token |
 | /audits/\*\*        | audit-log-service    | ✅ Secured (Admin) | View system logs (Back Office use only) |
 | /internal/\*\*      | ❌ **BLOCK**         | ⛔ Forbidden       | Block external access to internal APIs  |
+
+References:
+
+- Authentication Flow: `../../docs/shared_list/auth/authentication.md`
+- Error Codes: `../../docs/shared_list/errors/error_codes.md`
 
 ## **5\. Error Handling & Resilience Scenarios**
 

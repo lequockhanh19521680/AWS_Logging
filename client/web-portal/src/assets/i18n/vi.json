@@ -1,0 +1,17 @@
+{
+  "login": {
+    "title": "Đăng nhập",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "submit": "Đăng nhập"
+  },
+  "otp": {
+    "title": "Nhập OTP",
+    "input": "OTP",
+    "submit": "Xác minh"
+  },
+  "common": {
+    "error": "Có lỗi xảy ra",
+    "success": "Thành công"
+  }
+}
