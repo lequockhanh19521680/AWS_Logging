@@ -5,7 +5,7 @@
 ## **1\. Backend Stack (Java/Spring Boot)**
 
 - **Java Version:** Java 25 LTS (Required).
-- **Framework:** Spring Boot 3.x.
+- **Framework:** Spring Boot 4.x.
 - **Build Tool:** Gradle (Groovy DSL).
 - **Lombok:** Heavily used for @Data, @Builder, @RequiredArgsConstructor.
 - **Mapping:** Use MapStruct for Entity \<-\> DTO conversion. Do not write manual setters.
