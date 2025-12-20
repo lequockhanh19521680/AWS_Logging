@@ -101,14 +101,44 @@ This is the most critical feature to ensure financial safety and prevent employe
      - Calls _Core Banking Service_ to credit the wallet.
    - **Result:** Money is credited to the customer's wallet.
 
-### **4.2. Authentication Flow**
+### **4.2. Authentication Flow (Updated: 2-Step 2FA)**
 
-1. **Internal User Login:**
-   - Uses Username/Password \+ OTP (2FA).
-   - Issues JWT Access Token containing roles and permissions claims.
-2. **External System (Machine-to-Machine):**
-   - Uses Client ID \+ Client Secret (OAuth2 Client Credentials Flow).
-   - Issues JWT with short expiration and limited scope (e.g., only tx:create).
+To ensure maximum security for Internal Users, the Login process is split into two steps using an intermediate token.
+
+**Step 1: Primary Authentication**
+
+- **Input:** Username \+ Password.
+- **Process:** Verify credentials and user status (ACTIVE).
+- **Output:**
+  - If 2FA is **disabled**: Return Access Token \+ Refresh Token immediately.
+  - If 2FA is **enabled**: Generate OTP (send via Email/SMS) and return a **PRE_AUTH_TOKEN** (Temporary Token).
+  - _Constraint:_ PRE_AUTH_TOKEN is short-lived (e.g., 5 minutes) and has **NO** permission to access resources. It can only call the /verify-otp endpoint.
+
+**Step 2: OTP Verification**
+
+- **Input:** PRE_AUTH_TOKEN \+ OTP Code.
+- **Process:** Verify the temporary token signature and check if the OTP matches/is valid.
+- **Output:** Return standard Access Token \+ Refresh Token.
+
+### **4.3. Standard JWT Structure (Claims Contract)**
+
+To ensure the API Gateway can correctly extract user information and forward it to downstream services (via X-User-Id and X-Roles headers), the JWT Payload must strictly follow this structure:
+
+{  
+ "sub": "a1b2c3d4-...", // User UUID (Mapped to X-User-Id)  
+ "iss": "fintech-identity", // Issuer  
+ "iat": 1678900000, // Issued At  
+ "exp": 1678903600, // Expiration  
+ "type": "ACCESS", // Token Type: ACCESS or REFRESH  
+ "roles": \[ // Mapped to X-Roles header  
+ "ROLE_OPERATOR",  
+ "ROLE_CHECKER"  
+ \],  
+ "permissions": \[ // Optional: for fine-grained checks if needed  
+ "tx:create",  
+ "wallet:view"  
+ \]  
+}
 
 ## **5\. Security Checklist**
 
