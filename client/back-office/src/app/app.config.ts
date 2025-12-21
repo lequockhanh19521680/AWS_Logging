@@ -1,8 +1,4 @@
-import {
-  ApplicationConfig,
-  importProvidersFrom,
-  provideBrowserGlobalErrorListeners,
-} from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -20,13 +16,10 @@ export function httpLoaderFactory(http: HttpClient) {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-    provideClientHydration(withEventReplay()),
+    provideRouter(routes), provideClientHydration(withEventReplay()),
     provideHttpClient(withInterceptors([authInterceptor])),
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        loader: { provide: TranslateLoader, useFactory: httpLoaderFactory, deps: [HttpClient] },
-      })
-    ),
-  ],
+    importProvidersFrom(TranslateModule.forRoot({
+      loader: { provide: TranslateLoader, useFactory: httpLoaderFactory, deps: [HttpClient] }
+    }))
+  ]
 };
